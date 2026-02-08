@@ -5,7 +5,7 @@ export interface IApi {
     post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
-export type TPayment = 'card' | 'cash';
+export type TPayment = 'card' | 'cash' | null;
 
 export interface IProduct {
     id: string;
@@ -24,16 +24,11 @@ export interface ICustomer {
 }
 
 export interface IValidationCustomerResult {
-    isValid: boolean;
-    errors: {
-        payment?: string;
-        address?: string;
-        phone?: string;
-        email?: string;
-    };
+    errors: Partial<Record<keyof ICustomer, string>>;
 }
 
 export interface IProductsResponse {
+    total: number;
     items: IProduct[];
 }
 

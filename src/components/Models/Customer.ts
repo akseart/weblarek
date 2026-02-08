@@ -1,10 +1,10 @@
 import type {ICustomer, IValidationCustomerResult, TPayment} from '../../types';
 
 class Customer {
-    private payment: TPayment | null = null;
-    private address: string | null = null;
-    private phone: string | null = null;
-    private email: string | null = null;
+    private payment: TPayment = null;
+    private address: string = '';
+    private phone: string = '';
+    private email: string = '';
 
     setData(data: Partial<ICustomer>): void {
         if (data.payment !== undefined) {
@@ -23,7 +23,8 @@ class Customer {
 
     getData(): ICustomer {
         return {
-            payment: this.payment as TPayment,
+            payment: this.payment,
+            // Кажется, что здесь в таком случае не имеет смысла вообще проверка через ??
             address: this.address ?? '',
             phone: this.phone ?? '',
             email: this.email ?? ''
@@ -32,9 +33,9 @@ class Customer {
 
     clear(): void {
         this.payment = null;
-        this.address = null;
-        this.phone = null;
-        this.email = null;
+        this.address = '';
+        this.phone = '';
+        this.email = '';
     }
 
     validate(): IValidationCustomerResult {
@@ -53,7 +54,6 @@ class Customer {
             errors.email = 'Поле "email" не заполнено';
         }
         return {
-            isValid: Object.keys(errors).length === 0,
             errors
         };
     }
