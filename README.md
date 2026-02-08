@@ -98,3 +98,100 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+## Данные
+### Интерфейс описания товара
+Интерфейс используется для учета товаров, используемых в приложении
+```typescript
+interface IProduct {
+  id: string;
+  description: string;
+  image: string;
+  title: string;
+  category: string;
+  price: number | null;
+} 
+
+```
+
+### Интерфейс описания покупателя
+Интерфейс используется для учета покупателей, которые могут быть в приложении
+```typescript
+interface ICustomer {
+    payment: TPayment;
+    email: string;
+    phone: string;
+    address: string;
+}
+```
+
+### Интерфейс описания данных валидации формы покупателя
+
+```typescript
+interface IValidationCustomerResult {
+	isValid: boolean;
+	errors: {
+		payment?: string;
+		address?: string;
+		phone?: string;
+		email?: string;
+	};
+}
+```
+
+### Тип оплаты
+По ТЗ, способ оплаты может принимать значения “card” или “cash”
+```typescript
+type TPayment = 'card' | 'cash';
+```
+## Модели данных
+### Класс Catalog
+Класс предназначен для хранения данных о всех товарах
+#### Поля данных
+- `private products: IProduct[]` - массив всех товаров.
+- `private selectedProduct: IProduct | null` - товар, выбранный для подробного отображения.
+
+#### Методы
+- `setProducts(products: IProduct[]): void` - сохранение массива товаров, полученного в параметрах метода.
+- `getProducts(): IProduct[]` - получение массива товаров из модели.
+- `getProductById(id: string): IProduct | undefined` - получение одного товара по его `id`.
+- `setSelectedProduct(product: IProduct | null): void` - сохранение товара для подробного отображения.
+- `getSelectedProduct(): IProduct | null` - получение товара для подробного отображения.
+
+
+### Класс ShoppingCart
+Класс предназначен для хранения и управления данными о текущей корзине товаров
+#### Поля данных
+- `private items: IProduct[]` - массив товаров, выбранных покупателем для покупки.
+
+#### Методы
+- `getItems(): IProduct[]` - получение массива товаров, которые находятся в корзине.
+- `addItem(product: IProduct): void` - добавление товара, полученного в параметре, в массив корзины.
+- `removeItem(product: IProduct): void` - удаление товара, полученного в параметре, из массива корзины.
+- `clear(): void` - очистка корзины.
+- `getTotalCost(): number` - получение стоимости всех товаров в корзине (сумма полей `price` всех товаров, принимая `null` как 0).
+- `getCount(): number` - получение количества товаров в корзине.
+- `hasItem(id: string): boolean` - проверка наличия товара в корзине по его `id`, полученному в параметре метода.
+
+### Класс Customer
+Класс предназначен для хранения и управления данными о покупателе
+
+#### Поля данных
+- `private payment: TPayment | null` - вид оплаты.
+- `private address: string | null` - адрес.
+- `private phone: string | null` - телефон.
+- `private email: string | null` - email.
+
+#### Методы
+- `setData(data: Partial<IBuyer>): void` - сохранение данных в модели; позволяет сохранить только часть полей, не затирая остальные (например, только адрес или только телефон).
+- `getData(): IBuyer` - получение всех данных покупателя.
+- `clear(): void` - очистка данных покупателя.
+- `validate(): IValidationResult` - валидация данных; поле валидно, если оно не пустое. Метод возвращает валидность и информацию об ошибке по каждому полю.
+
+## Слой коммуникации
+### Класс CommunicationAPI
+Класс предназначен для взаимодействия с серверной частью приложения «веб-ларёк» посредством API запросов
+#### Поля данных
+- `api: IApi` - инстанс объекта, который реализовывает взаимодействие с API.
+#### Методы
+- `fetchProducts(): Promise<IProduct[]>` - получение списка товаров через API.
+- `sendOrder(order: IOrderRequest): Promise<IOrderResponse>` - отправка запроса на получение покупки.
