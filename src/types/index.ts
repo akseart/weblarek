@@ -34,7 +34,7 @@ export interface IProductsResponse {
 
 export interface IOrderRequest extends ICustomer {
     total: number;
-    items: IProduct[];
+    items: string[]; // Ранее не заметил, что items должны передаваться id
 }
 
 export interface IOrderResponse {
