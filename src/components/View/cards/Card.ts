@@ -22,7 +22,7 @@ export abstract class Card<T extends ICardData> extends Component<T>{
     }
 
     set price(value: number | null){
-        this.priceElement.textContent = value === null? `${value} синапсов` : "Бесценно";
+        this.priceElement.textContent = value !== null? `${value} синапсов` : "Бесценно";
     }
 
     set  title (value: string) {
