@@ -1,11 +1,16 @@
 import type {IProduct} from '../../types';
+import {EventEmitter} from "../base/Events.ts";
 
 class Catalog {
+    constructor(protected events: EventEmitter) {
+
+    }
     private products: IProduct[] = [];
     private selectedProduct: IProduct | null = null;
 
     setProducts(products: IProduct[]): void {
         this.products = products;
+        this.events.emit('catalog:changed')
     }
 
     getProducts(): IProduct[] {
