@@ -24,9 +24,9 @@ const events = new EventEmitter();
 
 events.onAll((event) => console.log(event))
 // region Model
-let modelCatalog = new Catalog(events);
-let modelCustomer = new Customer();
-let modelCart = new ShoppingCart(events);
+const modelCatalog = new Catalog(events);
+const modelCustomer = new Customer();
+const modelCart = new ShoppingCart(events);
 // endregion
 
 // region View
@@ -85,12 +85,15 @@ events.on('card:select', (item: IProduct) => {
 });
 
 events.on('cart:add', () => {
-    console.log('cart:add')
     const selectedProduct = modelCatalog.getSelectedProduct()
     if (selectedProduct === null) {
         throw new Error(`Unknown add product`);
     }
-    modelCart.addItem(selectedProduct)
+    if (modelCart.hasItem(selectedProduct.id)) {
+        modelCart.removeItem(selectedProduct)
+    } else {
+        modelCart.addItem(selectedProduct)
+    }
     modelCatalog.setSelectedProduct(null)
     events.emit('modal:close')
 })
@@ -102,7 +105,6 @@ events.on('modal:close', () => {
 
 // region Cart
 events.on('cart:open', () => {
-    events.emit('cart:changed');
     viewModal.content = viewCart.render();
 })
 
@@ -197,6 +199,10 @@ events.on('formContacts:submit', async ()=>{
 
         viewSuccess.cost = response.total;
         viewModal.content = viewSuccess.render();
+        modelCart.clear();
+        modelCustomer.clear()
+        viewContacts.clear();
+        viewOrder.clear()
 
     } catch (error) {
         console.error('Ошибка при отправке заказа:', error);
@@ -206,10 +212,7 @@ events.on('formContacts:submit', async ()=>{
 
 events.on('successOrder:close', () => {
     console.log('successOrder:close')
-    modelCart.clear();
-    modelCustomer.clear()
-    viewContacts.clear();
-    viewOrder.clear()
+
     viewModal.close()
 
 })
