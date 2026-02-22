@@ -21,6 +21,7 @@ export class Cart extends Component<ICart> {
         this.acceptButton.addEventListener('click', () => {
             event.emit('cart:order')
         })
+        this.acceptButton.disabled = false;
     }
 
     set cartItems(value: HTMLElement[]) {
