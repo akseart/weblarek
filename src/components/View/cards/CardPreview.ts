@@ -26,4 +26,8 @@ export class CardPreview extends CardWithMeta<TDataCardPreview> {
     set addButtonState (value: boolean){
         this.addButtonElement.disabled = value;
     }
+
+    set buttonText (value: string) {
+        this.addButtonElement.textContent = value;
+    }
 }
