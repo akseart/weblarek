@@ -31,7 +31,7 @@ export abstract class CardWithMeta<T extends ICardData> extends Card<T> {
         // Добавляем необходимую
         const cls = categoryMap[value as CategoryKey]
         if (cls) {
-            this.categoryElement.classList.add()
+            this.categoryElement.classList.add(cls)
         }
     }
 }
